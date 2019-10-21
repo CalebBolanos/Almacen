@@ -2,6 +2,14 @@
 #include <stdio.h>
 #include <dos.h>
 
+struct producto{
+    int id;
+	char nombre[500];
+	float precio;
+    struct producto *siguiente;
+};
+
+
 void inicioSesion(char mensaje[50]);
 void iniciarSesionAdministrador(char mensaje[50]);
 void iniciarSesionVendedor(char mensaje[50]);
@@ -13,6 +21,9 @@ main()
 	return 0;
 }
 
+/**
+ * Menu de inicio de sesion, se puede elegir entre administrador o vendedor
+**/
 void inicioSesion(char mensaje[50]){
 	printf("%s\n", mensaje);
 	int opc = 0;
