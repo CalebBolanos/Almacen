@@ -1,5 +1,7 @@
 #include <graphics.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
 #include <dos.h>
 
 struct producto{
@@ -13,14 +15,34 @@ struct producto{
 void inicioSesion(char mensaje[50]);
 void iniciarSesionAdministrador(char mensaje[50]);
 void iniciarSesionVendedor(char mensaje[50]);
+void inicializarAlmacen();
+void obtenerProductosAlmacen();
 
 main()
 {
+	inicializarAlmacen();
 	inicioSesion("");
 	printf("almacen");
 	return 0;
 }
 
+
+void inicializarAlmacen(){
+	FILE *archivoProductos;
+	archivoProductos = fopen("./productos.txt", "r+");
+	if(archivoProductos != NULL) { 
+		
+	}
+	else{
+		printf("No hay ningun producto en el almacen. Creando nuevo archivo \n"); 
+		archivoProductos = fopen("./productos.txt", "w+");
+	}
+
+}
+
+void obtenerProductosAlmacen(){
+
+}
 /**
  * Menu de inicio de sesion, se puede elegir entre administrador o vendedor
 **/
@@ -54,15 +76,25 @@ void iniciarSesionAdministrador(char mensaje[50]){
 	printf("%s\n", mensaje);
 	printf("Iniciar Sesion: Administrador\n");
 	printf("Escribe la contrasena\n");
-	printf("Para regresar al menu principal pulse la tecla ESC\n");
 	scanf("%s", &contrasena);
+	
 	if(strcmp(contrasena, "ok") == 0){
 		printf("ok\n");
 	}
 	else{
-		iniciarSesionAdministrador("contrasena incorrecta");
-		return;
+		char opc;
+		printf("contrasena incorrecta\n");
+		printf("Desea regresar al menu principal? s: si, n: no\n");
+		scanf("%s", &opc);
+		system("cls");
+		if(opc == 's'){
+			inicioSesion("");
+		}else{
+			iniciarSesionAdministrador("contrasena incorrecta");
+			return;
+		}
 	}
+	
 }
 
 void iniciarSesionVendedor(char mensaje[50]){
