@@ -25,6 +25,7 @@ void insertarProductoDesdeArchivos(int id, char nombre[500], float precio);
 void altaProductos();
 void bajaProductos(char mensaje[50]);
 void actualizarArchivo();
+void editarProducto(char mensaje[50]);
 
 struct producto *raiz = NULL;
 struct producto *fondo = NULL;
@@ -33,7 +34,6 @@ main()
 {
 	inicializarAlmacen();
 	inicioSesion("");
-	printf("almacen");
 	return 0;
 }
 
@@ -139,9 +139,9 @@ void menuAdministrador()
 
 	printf("Selecciona la opcion que desees\n\n");
 	printf("\n\t\t\t\t1.Agregar Producto\n");
-	printf("\n\t\t\t\t2.Quitar producto\n");
-	printf("\n\t\t\t\t3.Modificar Producto\n");
-	printf("\n\t\t\t\t4.Volver a menu\n");
+	printf("\n\t\t\t\t2.Borrar Producto\n");
+	printf("\n\t\t\t\t3.Editar Producto\n");
+	printf("\n\t\t\t\t4.Cerrar Sesion\n");
 	printf("\n\t\t\t\t5.Salir\n");
 	printf("\n\nOpcion seleccionada:\t\t");
 	scanf("%d", &opA);
@@ -160,6 +160,7 @@ void menuAdministrador()
 	}
 	case 3:
 	{
+		editarProducto("");
 		break;
 	}
 	case 4:
@@ -275,7 +276,7 @@ void insertarProducto(char nombre[500], float precio)
 		fondo = nuevo;
 		sprintf(buffer, "\n%d, %s, %f", nuevo->id, nuevo->nombre, nuevo->precio);
 	}
-	
+
 	FILE *archivoProductos;
 	archivoProductos = fopen("./productos.txt", "a+");
 	if (archivoProductos != NULL)
@@ -308,6 +309,9 @@ void altaProductos()
 	scanf("%f", &precio);
 	insertarProducto(nombre, precio);
 	imprimirproductosConsola();
+	system("PAUSE");
+	menuAdministrador();
+
 }
 
 void bajaProductos(char mensaje[50])
@@ -374,6 +378,74 @@ void bajaProductos(char mensaje[50])
 	bajaProductos("Digite un id de la lista");
 }
 
+void editarProducto(char mensaje[50])
+{
+	system("cls");
+	printf("%s\n", mensaje);
+	imprimirproductosConsola();
+	int idEscogido = 0;
+	printf("Escribe el id del producto al que deseas hacer modificaciones\n");
+	scanf("%d", &idEscogido);
+	struct producto *recorrido = raiz;
+	while (recorrido != NULL)
+	{
+		if (recorrido->id == idEscogido)
+		{
+			int opcionesEdicion = 0;
+			printf("%i,%s,%.2f \n", recorrido->id, recorrido->nombre, recorrido->precio);
+			printf("Elige una opcion:\n");
+			printf("1. Editar nombre\n");
+			printf("2. Editar precio\n");
+			printf("3. Cancelar\n");
+			scanf("%d", &opcionesEdicion);
+
+			switch (opcionesEdicion)
+			{
+				case 1:
+				{
+					char nombre[500] = "";
+					printf("Escribe el nuevo nombre del producto\n");
+					scanf("%s", &nombre);
+					strcpy(recorrido->nombre, nombre);
+					imprimirproductosConsola();
+					system("PAUSE");
+					actualizarArchivo();
+					menuAdministrador();	
+					return;
+					break;
+				}
+				case 2:
+				{
+					float precio = 0;
+					printf("Escribe el nuevo precio del producto\n");
+					scanf("%f", &precio);
+					recorrido->precio = precio;
+					imprimirproductosConsola();
+					system("PAUSE");
+					actualizarArchivo();
+					menuAdministrador();	
+					return;
+					break;
+				}
+				case 3:
+				{
+					menuAdministrador();
+					return;
+					break;
+				}
+				default:
+				{
+					editarProducto("Selecciona una opcion del menu");
+					return;
+					break;
+				}
+			}
+		}
+		recorrido = recorrido->siguiente;
+	}
+	editarProducto("Digite un id de la lista");
+}
+
 void actualizarArchivo()
 {
 	char buffer[1000] = "";
@@ -381,7 +453,8 @@ void actualizarArchivo()
 	archivoProductos = fopen("./productos.txt", "w+");
 
 	struct producto *recorrido = raiz;
-	if(recorrido != NULL){
+	if (recorrido != NULL)
+	{
 		sprintf(buffer, "%d, %s, %f", recorrido->id, recorrido->nombre, recorrido->precio);
 		fputs(buffer, archivoProductos);
 		recorrido = recorrido->siguiente;
