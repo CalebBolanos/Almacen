@@ -54,7 +54,7 @@ void inicializarAlmacen()
 
 void leerProductos(FILE *archivo)
 {
-	printf("\nEl contenido del archivo de prueba es \n\n");
+	//printf("\nEl contenido del archivo de prueba es \n\n");
 	char caracteres[1000] = "";
 	while (feof(archivo) == 0)
 	{ //salto de linea
@@ -73,15 +73,15 @@ void leerProductos(FILE *archivo)
 				{
 				case 1: //id
 					sscanf(token, "%d", &id);
-					printf("id: %d\n", id);
+					//printf("id: %d\n", id);
 					break;
 				case 2: //nombre
 					strcpy(nombre, token);
-					printf("nombre: %s\n", nombre);
+					//printf("nombre: %s\n", nombre);
 					break;
 				case 3: //precio
 					sscanf(token, "%f", &precio);
-					printf("precio: %s\n", token);
+					//printf("precio: %s\n", token);
 					break;
 				default:
 					break;
@@ -165,6 +165,8 @@ void menuAdministrador()
 	}
 	case 4:
 	{
+		system("cls");
+		inicioSesion("Sesion cerrada");
 		break;
 	}
 	case 5:
@@ -341,9 +343,6 @@ void bajaProductos(char mensaje[50])
 				}
 				else
 				{
-
-					if (recorrido != NULL)
-					{
 						struct producto *sig = recorrido->siguiente;
 						if (recorrido == raiz)
 						{
@@ -351,19 +350,23 @@ void bajaProductos(char mensaje[50])
 						}
 						else
 						{
-							anterior->siguiente = sig;
+							if (sig != NULL){
+								anterior->siguiente = sig;
+							}
+							else{
+								anterior->siguiente = NULL;
+								fondo = anterior;
+							}
+							
+
 						}
-					}
-					else
-					{
-						anterior->siguiente = NULL;
-						fondo = anterior;
-					}
+					
 				}
 				free(recorrido);
 				actualizarArchivo();
 				imprimirproductosConsola();
-				bajaProductos("");
+				system("PAUSE");
+				menuAdministrador();
 				return;
 			}
 			else
