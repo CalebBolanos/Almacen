@@ -21,14 +21,20 @@ void obtenerProductosAlmacen();
 void leerProductos(FILE *archivo);
 void insertarProducto(char nombre[500], float precio);
 void imprimirproductosConsola();
+void imprimirproductosConsolaV();
 void insertarProductoDesdeArchivos(int id, char nombre[500], float precio);
 void altaProductos();
 void bajaProductos(char mensaje[50]);
 void actualizarArchivo();
 void editarProducto(char mensaje[50]);
+void calcularTotalCompra();
+void agregarCarrito(char nombre[500], float precio);
 
 struct producto *raiz = NULL;
 struct producto *fondo = NULL;
+
+struct producto *compraRaiz = NULL;
+struct producto *compraFondo = NULL;
 
 main()
 {
@@ -47,7 +53,7 @@ void inicializarAlmacen()
 	}
 	else
 	{
-		printf("No hay ningun producto en el almacen. Creando nuevo archivo \n");
+		printf("\nNo hay ningun producto en el almacen. Creando nuevo archivo \n");
 		archivoProductos = fopen("./productos.txt", "w+");
 	}
 }
@@ -105,9 +111,9 @@ void inicioSesion(char mensaje[50])
 {
 	printf("%s\n", mensaje);
 	int opc = 0;
-	printf("Almacen: Iniciar Sesion\n");
+	printf("Almacen: Iniciar Sesion\n\n\n");
 	printf("1. Administrador\n");
-	printf("2. Vendedor\n");
+	printf("2. Vendedor\n\n");
 	printf("Elige una opcion\n");
 	printf("\n");
 	scanf("%i", &opc);
@@ -121,7 +127,7 @@ void inicioSesion(char mensaje[50])
 		iniciarSesionVendedor("");
 		break;
 	default:
-		inicioSesion("Selecciona una opcion del menu");
+		inicioSesion("Selecciona una opcion del menu\n\n");
 		break;
 	}
 }
@@ -130,6 +136,7 @@ void menuAdministrador()
 {
 	int opA = 0;
 	system("cls");
+	system("color 04");
 	printf("***************************************************************\n");
 	printf("***********************ALMACEN DE PRODUCTOS********************\n");
 	printf("*************************              ************************\n");
@@ -184,7 +191,7 @@ void iniciarSesionAdministrador(char mensaje[50])
 {
 	char contrasena[50] = "";
 	printf("%s\n", mensaje);
-	printf("Iniciar Sesion: Administrador\n");
+	printf("Iniciar Sesion: Administrador\n\n");
 	printf("Escribe la contrasena\n");
 	scanf("%s", &contrasena);
 
@@ -209,27 +216,6 @@ void iniciarSesionAdministrador(char mensaje[50])
 			return;
 		}
 	}
-}
-
-void iniciarSesionVendedor(char mensaje[50])
-{
-	int op;
-	int opc;
-	system("color 09");
-	printf("***************************************************************\n");
-	printf("*************************Tienda El Caly************************\n");
-	printf("*************************              ************************\n");
-	printf("*************************  BIENVENIDO  ************************\n");
-	printf("******************** A LA VENTA DE PRODUCTOS *****************\n");
-	printf("***************************************************************\n\n\n\n");
-	printf("\t1.Producto 1                         Productos seleccionados:\n\n");
-	printf("\t2.Producto 2\n\n");
-	printf("\t3.Producto 3\n\n");
-	printf("\t4.Producto n                         TOTAL: \n\n\n");
-	printf("Selecciona el producto que desees:\t");
-	scanf("%d", &op);
-	printf("\n\nSelecciona la cantidad:\t");
-	scanf("%d", &opc);
 }
 
 void insertarProductoDesdeArchivos(int id, char nombre[500], float precio)
@@ -290,11 +276,23 @@ void insertarProducto(char nombre[500], float precio)
 
 void imprimirproductosConsola()
 {
+	system("cls");
 	struct producto *recorrido = raiz;
-	printf("Lista completa.\n");
+	printf("\nLista completa.\n\n");
 	while (recorrido != NULL)
 	{
-		printf("%i,%s,%.2f \n", recorrido->id, recorrido->nombre, recorrido->precio);
+		printf("%i,%s,%.2f \n\n", recorrido->id, recorrido->nombre, recorrido->precio);
+		recorrido = recorrido->siguiente;
+	}
+	printf("\n");
+}
+
+void imprimirproductosConsolaV()
+{
+   struct producto *recorrido = raiz;
+   while (recorrido != NULL)
+	{
+		printf("%i,%s,%.2f \n\n", recorrido->id, recorrido->nombre, recorrido->precio);
 		recorrido = recorrido->siguiente;
 	}
 	printf("\n");
@@ -305,9 +303,10 @@ void altaProductos()
 	char nombre[500] = "";
 	float precio = 0;
 	system("cls");
-	printf("Escribe el nombre del producto\n");
+	system("color 04");
+	printf("Escribe el nombre del producto\n\n");
 	scanf("%s", &nombre);
-	printf("Escribe el precio del producto\n");
+	printf("\nEscribe el precio del producto\n\n");
 	scanf("%f", &precio);
 	insertarProducto(nombre, precio);
 	imprimirproductosConsola();
@@ -319,10 +318,11 @@ void altaProductos()
 void bajaProductos(char mensaje[50])
 {
 	system("cls");
+	system("color 04");
 	printf("%s\n", mensaje);
 	imprimirproductosConsola();
 	int idEscogido = 0;
-	printf("Escribe el id del producto que deseas borrar\n");
+	printf("\nEscribe el id del producto que deseas borrar\n\n");
 	scanf("%d", &idEscogido);
 	struct producto *recorrido = raiz;
 	struct producto *anterior = raiz;
@@ -331,7 +331,7 @@ void bajaProductos(char mensaje[50])
 		if (recorrido->id == idEscogido)
 		{
 			char opc;
-			printf("Estas seguro de que deseas borrar el siguiente producto?  s: si, n: no\n");
+			printf("\n\nEstas seguro de que deseas borrar el siguiente producto?  s: si, n: no\n");
 			printf("%i,%s,%.2f \n", recorrido->id, recorrido->nombre, recorrido->precio);
 			scanf("%s", &opc);
 			if (opc == 's')
@@ -384,6 +384,7 @@ void bajaProductos(char mensaje[50])
 void editarProducto(char mensaje[50])
 {
 	system("cls");
+	system("color 04");
 	printf("%s\n", mensaje);
 	imprimirproductosConsola();
 	int idEscogido = 0;
@@ -396,7 +397,7 @@ void editarProducto(char mensaje[50])
 		{
 			int opcionesEdicion = 0;
 			printf("%i,%s,%.2f \n", recorrido->id, recorrido->nombre, recorrido->precio);
-			printf("Elige una opcion:\n");
+			printf("\nElige una opcion:\n\n");
 			printf("1. Editar nombre\n");
 			printf("2. Editar precio\n");
 			printf("3. Cancelar\n");
@@ -469,4 +470,91 @@ void actualizarArchivo()
 		recorrido = recorrido->siguiente;
 	}
 	fclose(archivoProductos);
+}
+
+void iniciarSesionVendedor(char mensaje[50])
+{
+    float p=0;
+    int e=0;
+    
+	system("color 06");
+	printf("***************************************************************\n");
+	printf("*************************Tienda El Caly************************\n");
+	printf("*************************              ************************\n");
+	printf("*************************  BIENVENIDO  ************************\n");
+	printf("******************** A LA VENTA DE PRODUCTOS *****************\n");
+	printf("***************************************************************\n\n\n\n");
+	printf("Productos disponibles:\n\n");
+    imprimirproductosConsolaV();
+    int idEscogido = 0;
+	printf("\n\nEscribe el id del producto que deseas\n");
+	scanf("%d", &idEscogido);
+	struct producto *recorrido = raiz;
+	while(recorrido != NULL)
+	{
+	   if(recorrido->id == idEscogido)
+		{
+			system("cls");
+			printf("\n\n%i,%s,%.2f \n", recorrido->id, recorrido->nombre, recorrido->precio);
+			printf("\nDigite la cantidad que va a llevar de ese producto\n");
+			scanf("%f",&p);
+			printf("\n\n%i,%s,%.2f,%.2f \n", recorrido->id, recorrido->nombre, recorrido->precio, p*recorrido->precio);
+			agregarCarrito(recorrido->nombre, p*recorrido->precio);
+			printf("Desea continuar con la compra: s:si, n:no\n");
+			char opc;
+			scanf("%s", &opc);
+			if (opc == 's'){
+				iniciarSesionVendedor("");
+				return;
+			}
+			else{
+				calcularTotalCompra();
+				return;	
+			}
+			system("cls");
+			inicioSesion("");	
+		    return;
+	    } 
+	      recorrido = recorrido->siguiente; 
+    }
+    iniciarSesionVendedor("Elije una opcion");
+}
+
+void agregarCarrito(char nombre[500], float precio)
+{
+	char buffer[1000] = "";
+	struct producto *nuevo;
+	int id = 0;
+	nuevo = (struct producto *)malloc(sizeof(struct producto));
+	strcpy(nuevo->nombre, nombre);
+	nuevo->precio = precio;
+	nuevo->siguiente = NULL;
+	if (compraRaiz == NULL)
+	{
+		compraRaiz = nuevo;
+		compraFondo = nuevo;
+		nuevo->siguiente = NULL;
+		nuevo->id = 0;
+	}
+	else
+	{
+		id = compraFondo->id + 1;
+		nuevo->id = id;
+		compraFondo->siguiente = nuevo;
+		compraFondo = nuevo;
+	}
+}
+
+void calcularTotalCompra(){
+	struct producto *recorrido = compraRaiz;
+	float total = 0;
+	int i = 1;
+	   while (recorrido != NULL)
+		{
+			printf("%i,%s,%.2f \n\n", i, recorrido->nombre, recorrido->precio);
+			total += recorrido->precio;
+			i++;
+			recorrido = recorrido->siguiente;
+		}
+		printf("%.2f", total);
 }
